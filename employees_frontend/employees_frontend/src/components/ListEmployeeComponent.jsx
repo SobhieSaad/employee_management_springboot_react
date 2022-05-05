@@ -28,7 +28,7 @@ export class ListEmployeeComponent extends Component {
     }
 
     addEmployee(){
-        this.props.history.push('/add-employee/-1');
+        this.props.history.push('/add-employee/_add');
     }
   render() {
     return (

@@ -16,14 +16,14 @@ class CreateEmployeeComponent extends Component {
         this.changeLastNameHandler=this.changeLastNameHandler.bind(this);
         this.changeFirstNameHandler=this.changeFirstNameHandler.bind(this);
         this.changeEmailHandler=this.changeEmailHandler.bind(this);
-        this.saveEmployee = this.saveEmployee.bind(this);
+        this.saveOrUpdateEmployee = this.saveOrUpdateEmployee.bind(this);
     }
 
-    saveEmployee =(e)=>{
+    saveOrUpdateEmployee =(e)=>{
         e.preventDefault();
         let employee={firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId};
         
-        if(this.state.id== -1)
+        if(this.state.id=== "_add")
         {
             EmployeeService.createEmployee(employee).then(res=>{
                 this.props.history.push('/employees');
@@ -53,7 +53,7 @@ class CreateEmployeeComponent extends Component {
     }
 
     componentDidMount(){
-        if(this.state.id== -1)
+        if(this.state.id=== "_add")
         {
             return 
         }
@@ -69,7 +69,7 @@ class CreateEmployeeComponent extends Component {
         }
     }
     getTitle(){
-        if(this.state.id==-1)
+        if(this.state.id=== "_add")
         {
             return "Add employee"
         }
@@ -101,7 +101,7 @@ class CreateEmployeeComponent extends Component {
                                         <input type="text" name='email' placeholder="Email" className="form-control" 
                                         value={this.state.emailId} onChange={this.changeEmailHandler} />
                                     </div>
-                                    <button className='btn btn-success' onClick={this.saveEmployee}>Save</button>
+                                    <button className='btn btn-success' onClick={this.saveOrUpdateEmployee}>Save</button>
                                     <button className='btn btn-danger' onClick={this.cancel.bind(this)}
                                     style={{marginLeft:"10px"}}>Cancel</button>
                                 </form>
