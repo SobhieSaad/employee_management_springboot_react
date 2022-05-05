@@ -11,8 +11,14 @@ export class ListEmployeeComponent extends Component {
         }
 
         this.addEmployee = this.addEmployee.bind(this);
-    }
+        this.editEmployee = this.editEmployee.bind(this);
 
+    }
+    
+
+    editEmployee(id){
+        this.props.history.push(`/add-employee/${id}`)
+    }
     componentDidMount(){
         EmployeeService.getEmployees().then((res)=>{
             this.setState({
@@ -22,7 +28,7 @@ export class ListEmployeeComponent extends Component {
     }
 
     addEmployee(){
-        this.props.history.push('/add-employee');
+        this.props.history.push('/add-employee/-1');
     }
   render() {
     return (
@@ -49,7 +55,12 @@ export class ListEmployeeComponent extends Component {
                                 <td>{employee.firstName}</td>
                                 <td>{employee.lastName}</td>
                                 <td>{employee.emailId}</td>
-                                <td></td>
+                                <td>
+                                    <button className='btn btn-success' onClick={()=>this.editEmployee(employee.id)}>Update</button>
+                                    <button className='btn btn-danger' onClick={()=>this.deleteEmployee(employee.id)}>Delete</button>
+
+                                </td>
+                                
                             </tr>
                         )
                     }

@@ -7,6 +7,7 @@ class CreateEmployeeComponent extends Component {
     constructor(props){
         super(props);
         this.state={
+            id: this.props.match.params.id,
             firstName: '',
             lastName: '',
             emailId : ''
@@ -22,9 +23,18 @@ class CreateEmployeeComponent extends Component {
         e.preventDefault();
         let employee={firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId};
         
-        EmployeeService.createEmployee(employee).then(res=>{
-            this.props.history.push('/employees');
-        });
+        if(this.state.id== -1)
+        {
+            EmployeeService.createEmployee(employee).then(res=>{
+                this.props.history.push('/employees');
+            }); 
+        }
+        else{
+            EmployeeService.updateEmployee(employee,this.state.id).then(res=>{
+                this.props.history.push('/employees');
+            });
+        }
+        
     }
 
     cancel(){
@@ -41,13 +51,39 @@ class CreateEmployeeComponent extends Component {
     changeEmailHandler = (e)=>{
         this.setState({emailId: e.target.value})
     }
+
+    componentDidMount(){
+        if(this.state.id== -1)
+        {
+            return 
+        }
+        else{
+            EmployeeService.getEmployeeById(this.state.id).then(res=>{
+                let employee= res.data;
+                this.setState({
+                    firstName: employee.firstName,
+                    lastName: employee.lastName,
+                    emailId: employee.emailId
+                })
+            })
+        }
+    }
+    getTitle(){
+        if(this.state.id==-1)
+        {
+            return "Add employee"
+        }
+        else{
+            return "Update employee"
+        }
+    }
     render() {
         return (
             <div>
                 <div className='container'>
                     <div className='row'>
                         <div className='card col-md-6 offset-md-3 offset-md-3'>
-                            <h3 className='tect-center'>Add Employee</h3>
+                            <h3 className='tect-center'>{this.getTitle()}</h3>
                             <div className='card-body'>
                                 <form>
                                     <div className='form-group'>
