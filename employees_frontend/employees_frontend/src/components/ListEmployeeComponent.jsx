@@ -12,10 +12,16 @@ export class ListEmployeeComponent extends Component {
 
         this.addEmployee = this.addEmployee.bind(this);
         this.editEmployee = this.editEmployee.bind(this);
-
+        this.deleteEmployee= this.deleteEmployee.bind(this);
     }
     
 
+    deleteEmployee(id)
+    {
+        EmployeeService.deleteEmployee(id).then(res=>{
+            this.setState({employee: this.state.employees.filter(employee=>employee.id !==id)})
+        });
+    }
     editEmployee(id){
         this.props.history.push(`/add-employee/${id}`)
     }
@@ -57,7 +63,7 @@ export class ListEmployeeComponent extends Component {
                                 <td>{employee.emailId}</td>
                                 <td>
                                     <button className='btn btn-success' onClick={()=>this.editEmployee(employee.id)}>Update</button>
-                                    <button className='btn btn-danger' onClick={()=>this.deleteEmployee(employee.id)}>Delete</button>
+                                    <button style={{marginLeft:"10px"}} className='btn btn-danger' onClick={()=>this.deleteEmployee(employee.id)}>Delete</button>
 
                                 </td>
                                 
