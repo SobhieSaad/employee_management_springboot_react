@@ -7,6 +7,7 @@ class CreateEmployeeComponent extends Component {
     constructor(props){
         super(props);
         this.state={
+            id: this.props.match.params.id,
             firstName: '',
             lastName: '',
             emailId : ''
@@ -15,16 +16,25 @@ class CreateEmployeeComponent extends Component {
         this.changeLastNameHandler=this.changeLastNameHandler.bind(this);
         this.changeFirstNameHandler=this.changeFirstNameHandler.bind(this);
         this.changeEmailHandler=this.changeEmailHandler.bind(this);
-        this.saveEmployee = this.saveEmployee.bind(this);
+        this.saveOrUpdateEmployee = this.saveOrUpdateEmployee.bind(this);
     }
 
-    saveEmployee =(e)=>{
+    saveOrUpdateEmployee =(e)=>{
         e.preventDefault();
         let employee={firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId};
         
-        EmployeeService.createEmployee(employee).then(res=>{
-            this.props.history.push('/employees');
-        });
+        if(this.state.id=== "_add")
+        {
+            EmployeeService.createEmployee(employee).then(res=>{
+                this.props.history.push('/employees');
+            }); 
+        }
+        else{
+            EmployeeService.updateEmployee(employee,this.state.id).then(res=>{
+                this.props.history.push('/employees');
+            });
+        }
+        
     }
 
     cancel(){
@@ -41,13 +51,39 @@ class CreateEmployeeComponent extends Component {
     changeEmailHandler = (e)=>{
         this.setState({emailId: e.target.value})
     }
+
+    componentDidMount(){
+        if(this.state.id=== "_add")
+        {
+            return 
+        }
+        else{
+            EmployeeService.getEmployeeById(this.state.id).then(res=>{
+                let employee= res.data;
+                this.setState({
+                    firstName: employee.firstName,
+                    lastName: employee.lastName,
+                    emailId: employee.emailId
+                })
+            })
+        }
+    }
+    getTitle(){
+        if(this.state.id=== "_add")
+        {
+            return "Add employee"
+        }
+        else{
+            return "Update employee"
+        }
+    }
     render() {
         return (
             <div>
                 <div className='container'>
                     <div className='row'>
                         <div className='card col-md-6 offset-md-3 offset-md-3'>
-                            <h3 className='tect-center'>Add Employee</h3>
+                            <h3 className='tect-center'>{this.getTitle()}</h3>
                             <div className='card-body'>
                                 <form>
                                     <div className='form-group'>
@@ -65,7 +101,7 @@ class CreateEmployeeComponent extends Component {
                                         <input type="text" name='email' placeholder="Email" className="form-control" 
                                         value={this.state.emailId} onChange={this.changeEmailHandler} />
                                     </div>
-                                    <button className='btn btn-success' onClick={this.saveEmployee}>Save</button>
+                                    <button className='btn btn-success' onClick={this.saveOrUpdateEmployee}>Save</button>
                                     <button className='btn btn-danger' onClick={this.cancel.bind(this)}
                                     style={{marginLeft:"10px"}}>Cancel</button>
                                 </form>

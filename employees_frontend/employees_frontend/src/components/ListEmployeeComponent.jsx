@@ -11,8 +11,25 @@ export class ListEmployeeComponent extends Component {
         }
 
         this.addEmployee = this.addEmployee.bind(this);
+        this.editEmployee = this.editEmployee.bind(this);
+        this.deleteEmployee= this.deleteEmployee.bind(this);
+        this.viewEmployee=this.viewEmployee.bind(this);
+    }
+    
+    viewEmployee(id)
+    {
+        this.props.history.push(`view-employee/${id}`);
     }
 
+    deleteEmployee(id)
+    {
+        EmployeeService.deleteEmployee(id).then(res=>{
+            this.setState({employee: this.state.employees.filter(employee=>employee.id !==id)})
+        });
+    }
+    editEmployee(id){
+        this.props.history.push(`/add-employee/${id}`)
+    }
     componentDidMount(){
         EmployeeService.getEmployees().then((res)=>{
             this.setState({
@@ -22,7 +39,7 @@ export class ListEmployeeComponent extends Component {
     }
 
     addEmployee(){
-        this.props.history.push('/add-employee');
+        this.props.history.push('/add-employee/_add');
     }
   render() {
     return (
@@ -49,7 +66,12 @@ export class ListEmployeeComponent extends Component {
                                 <td>{employee.firstName}</td>
                                 <td>{employee.lastName}</td>
                                 <td>{employee.emailId}</td>
-                                <td></td>
+                                <td>
+                                    <button className='btn btn-success' onClick={()=>this.editEmployee(employee.id)}>Update</button>
+                                    <button style={{marginLeft:"10px"}} className='btn btn-danger' onClick={()=>this.deleteEmployee(employee.id)}>Delete</button>
+                                    <button style={{marginLeft:"10px"}} className='btn btn-primary' onClick={()=>this.viewEmployee(employee.id)}>View</button>
+                                </td>
+                                
                             </tr>
                         )
                     }
